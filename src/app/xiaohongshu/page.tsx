@@ -100,7 +100,7 @@ export default async function Page({ searchParams }: {
 					<Image
 						width={300}
 						alt="NextUI hero Image"
-						src={url}
+						src={"https://proxy.xiaosm.cn/" + url}
 						key={url}
 					/>
 				)) }
