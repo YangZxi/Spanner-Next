@@ -1,7 +1,7 @@
 
 import { title } from "@/components/primitives";
 import InputBox from "./input";
-import { Image } from "@nextui-org/react";
+import { Image, Card } from "@nextui-org/react";
 
 const table: {
 	[key: string]: string
@@ -46,6 +46,7 @@ function getJsonValue(str: string, key: string) {
 }
 
 const markText = "window.__INITIAL_STATE__=";
+const realImageUrl = "http://sns-img-hw.xhscdn.net/{}?imageView2/2/w/1280/format/jpeg/q/90";
 
 async function getXhsImage(url: string) {
 	const res = await fetch(url, {
@@ -74,10 +75,14 @@ async function getXhsImage(url: string) {
 		console.log(contentStr)
 		return [];
 	}
-	const content = JSON.parse(images);
-	// console.log(content);
-	// console.log(content.map((el: any) => el.infoList[1].url));
-	return content.map((el: any) => el.infoList[1].url);
+	try {
+		const content = JSON.parse(images);
+		// console.log(content.map((el: any) => el.infoList[1].url));
+		return content.map((el: any) => el.infoList[1].url);
+	} catch (err) {
+		console.log(images);
+	}
+	return [];
 }
 
 export default async function Page({ searchParams }: {
@@ -86,7 +91,14 @@ export default async function Page({ searchParams }: {
 
 	const url = searchParams.url ?? "";
 	console.log("xiaohongshu:", url);
-	const images = url ? await getXhsImage(url) : [];
+	const rawImages = url ? await getXhsImage(url) : [];
+	const images = rawImages.map((imgUrl: string) => {
+		// http://sns-webpic-qc.xhscdn.com/202312082340/f73e5f571b9de708ce9a65c3c8c20f4b/1040g2sg30sdnetobja0g4be7cb3bmulepuv7q3o!nd_whgt34_nwebp_wm_1
+		const end = imgUrl.lastIndexOf("!");
+		const start = imgUrl.substring(0, end).lastIndexOf("/");
+		if (start === -1 || end === -1) return imgUrl;
+		return realImageUrl.replace("{}", imgUrl.substring(start + 1, end));
+	});
 
 	return (
 		<div>
@@ -95,14 +107,22 @@ export default async function Page({ searchParams }: {
 			<div className="mt-5">
 				<InputBox url={url} />
 			</div>
-			<div className="mt-10 flex flex-wrap justify-between gap-unit-2">
-				{ images.map((url: string) => (
-					<Image
-						width={300}
-						alt="NextUI hero Image"
-						src={"https://proxy.xiaosm.cn/" + url}
+			<div className="mt-10 flex flex-wrap justify-center gap-unit-2">
+				{ images.length == 0 && url && <div className="w-full text-center">😢小红书链接有误，或文章已被删除</div> }
+				{ images.length > 0 && images.map((url: string, i: number) => (
+					<Card
+						className="border-none"
 						key={url}
-					/>
+					>
+						<Image
+							width={300}
+							height={300}
+							radius="lg"
+							className="object-cover"
+							alt={`image-${i}`}
+							src={"https://proxy.xiaosm.cn/" + url}
+						/>
+					</Card>
 				)) }
 			</div>
 		</div>

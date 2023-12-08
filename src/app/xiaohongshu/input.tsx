@@ -5,7 +5,6 @@ import {Button, Textarea} from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 
 const regex = /https?:\/\/[\w\.-]+(?:\.[\w\.-]+)+[\w\.-_~:/?#[\]@!$&'()*+,;=]+/;
-console.log(regex)
 
 export default function Page({ url: _url }: {url: string}) {
   const [text, setText] = useState(_url)
