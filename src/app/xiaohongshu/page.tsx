@@ -95,7 +95,7 @@ export default async function Page({ searchParams }: {
 			<div className="mt-5">
 				<InputBox url={url} />
 			</div>
-			<div className="mt-10 flex flex-wrap gap-unit-2">
+			<div className="mt-10 flex flex-wrap justify-between gap-unit-2">
 				{ images.map((url: string) => (
 					<Image
 						width={300}

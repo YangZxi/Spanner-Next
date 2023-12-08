@@ -1,27 +1,36 @@
 'use client';
 
 import { useState } from "react";
-import {Button, Input} from "@nextui-org/react";
+import {Button, Textarea} from "@nextui-org/react";
 import { useRouter } from 'next/navigation';
 
+const regex = /https?:\/\/[\w\.-]+(?:\.[\w\.-]+)+[\w\.-_~:/?#[\]@!$&'()*+,;=]+/;
+console.log(regex)
+
 export default function Page({ url: _url }: {url: string}) {
-  const [url, setUrl] = useState(_url)
+  const [text, setText] = useState(_url)
   const router = useRouter();
 
   return <>
     <div>
-      <Input
-        value={url} type="url" variant="underlined" label="链接"
+      <Textarea
+        value={text} type="text" variant="underlined" label="链接"
+        placeholder="请输入链接，或含有小红书链接的口令"
         onValueChange={(val) => {
         	console.log(val)
-          setUrl(val);
+          setText(val);
         }}
       />
     </div>
     <div className="text-right mt-2">
       <Button
         onClick={() => {
-        	if (!url) return;
+        	if (!text) return;
+          // 提取口令中的链接
+          const re = regex.exec(text);
+          if (re == null) return;
+          const url = re[0];
+          setText(url);
           router.push('/xiaohongshu?url=' + url);
         }}
         radius="none"
