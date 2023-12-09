@@ -6,6 +6,8 @@ import { Providers } from "./providers";
 import { Navbar } from "@/components/navbar";
 import { Link } from "@nextui-org/react";
 import clsx from "clsx";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
 	title: {
@@ -59,6 +61,8 @@ export default function RootLayout({
 						</footer>
 					</div>
 				</Providers>
+				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	);
