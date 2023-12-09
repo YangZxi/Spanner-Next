@@ -38,22 +38,24 @@ export default function RootLayout({
 					fontSans.variable
 				)}
 			>
-				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+				<Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
 					<div className="relative flex flex-col h-screen">
 						<Navbar />
 						<main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
 							{children}
 						</main>
-						<footer className="w-full flex items-center justify-center py-3">
-							<Link
-								isExternal
-								className="flex items-center gap-1 text-current"
-								href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-								title="nextui.org homepage"
-							>
-								<span className="text-default-600">Powered by</span>
-								<p className="text-primary">NextUI</p>
-							</Link>
+						<footer className="w-full text-center py-3">
+							<div className="text-default-600 text-[14px]">
+								<span>Copyright © 2023 </span>
+								<Link
+									isExternal
+									className="text-[14px] hover:underline"
+									href="//www.xiaosm.cn"
+									title="www.xiaosm.cn"
+								>
+									WWW.XIAOSM.CN
+								</Link>
+							</div>
 						</footer>
 					</div>
 				</Providers>

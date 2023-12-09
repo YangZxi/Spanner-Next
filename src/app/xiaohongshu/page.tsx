@@ -1,5 +1,5 @@
 
-import { title } from "@/components/primitives";
+import {subtitle, title} from "@/components/primitives";
 import InputBox from "./input";
 import { Image, Card } from "@nextui-org/react";
 
@@ -77,10 +77,10 @@ async function getXhsImage(url: string) {
 	}
 	try {
 		const content = JSON.parse(images);
-		// console.log(content.map((el: any) => el.infoList[1].url));
+		console.log(content.map((el: any) => el.infoList[1].url));
 		return content.map((el: any) => el.infoList[1].url);
 	} catch (err) {
-		console.log(images);
+		console.log(contentStr, images);
 	}
 	return [];
 }
@@ -102,7 +102,7 @@ export default async function Page({ searchParams }: {
 
 	return (
 		<div>
-			<h1 className={title()}>小红书</h1>
+			<h1 className={title()}>小红书<span className={subtitle()}> - 去水印图片解析</span></h1>
 
 			<div className="mt-5">
 				<InputBox url={url} />
@@ -116,7 +116,6 @@ export default async function Page({ searchParams }: {
 					>
 						<Image
 							width={300}
-							height={300}
 							radius="lg"
 							className="object-cover"
 							alt={`image-${i}`}
