@@ -9,10 +9,6 @@ export const siteConfig = {
 			href: "/",
 		},
     {
-      label: "小红书去水印",
-      href: "/xiaohongshu",
-    },
-    {
       label: "Blog",
       href: "//www.xiaosm.cn",
     },
