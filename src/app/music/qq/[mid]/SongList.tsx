@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default function SongList({songList = [], playingMid, onRotateMusic}: Props) {
-  console.log(songList)
+  // console.log(songList)
 
   return <>
     <Listbox
@@ -36,7 +36,7 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
               src={`https://y.qq.com/music/photo_new/T002R300x300M000${item.album.mid ?? ""}.jpg?max_age=2592000`}
               alt={item.album.title}
               classNames={{
-                img: "w-12 h-12 flex-grow",
+                img: "w-[48px] h-[48px] min-w-[48px]",
                 wrapper: "bg-contain"
               }}
             />

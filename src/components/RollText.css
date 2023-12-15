@@ -1,0 +1,20 @@
+.roll-text {
+    /*--hidden-width: 34px;*/
+    width: 100%;
+    overflow: hidden;
+}
+.roll-text > div {
+    width: max-content;
+    white-space: nowrap;
+}
+
+@keyframes text-roll {
+    0% {
+        transform: translateX(0px);
+        /*background: var(--testt);*/
+    }
+    100% {
+        transform: translateX(var(--hidden-width));
+        /*background: red;*/
+    }
+}

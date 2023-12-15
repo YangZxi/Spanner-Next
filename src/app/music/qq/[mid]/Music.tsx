@@ -12,6 +12,8 @@ import {
   ShuffleIcon, ListIcon
 } from "./Icon";
 import {MusicInfo} from "@/app/api/music/type";
+import {ResponsiveText} from "@/components/ResponsiveText";
+import RollText from "@/components/RollText";
 
 type Props = {
   info: MusicInfo;
@@ -65,7 +67,7 @@ export default function Music({ info, onRotateMusic }: Props) {
     } else {
       setDuration(audio?.duration);
     }
-  }, [audioRef, info.duration]);
+  }, [info]);
 
   const calcTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -75,6 +77,10 @@ export default function Music({ info, onRotateMusic }: Props) {
 
   const lyricsArray = info.lyric;
   const displayLyrics = (_curTime: number) => {
+    if (lyricsArray.length === 0) {
+      setCurrentLyric("当前歌曲暂无歌词提供");
+      return;
+    }
     const curTime = _curTime + 0.5;
     for (let i = 0; i < lyricsArray.length; i++) {
       const lyric = lyricsArray[i];
@@ -157,17 +163,20 @@ export default function Music({ info, onRotateMusic }: Props) {
                     shadow="sm"
                   />
                 </div>
-                <div className="flex flex-col gap-0 col-span-8">
-                  <h3 className="font-semibold text-foreground/90">{info.title}{(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}</h3>
+                <div className="flex flex-col gap-0 col-span-8 sm:col-span-12">
+                  <RollText className="font-semibold text-foreground/90">{info.title}
+                    {(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}
+                  </RollText>
                   <p className="text-small text-foreground/80">{info.singer}</p>
-                  <h1 className="text-large font-medium mt-2 min-h-[28px]">{currentLyric}</h1>
+                  <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
               </div>
               <Button
                 isIconOnly
-                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
+                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-1 translate-x-1"
                 radius="full"
                 variant="light"
+                size="sm"
                 onPress={() => setLiked((v) => !v)}
               >
                 <HeartIcon
