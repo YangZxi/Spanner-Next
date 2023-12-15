@@ -27,6 +27,7 @@ export default function Search({onSearch, ...props}: Props) {
     if (!val) return false;
     console.log(val);
     onSearch(val);
+    setValue("");
     hideKeyboard();
     return true;
   }
