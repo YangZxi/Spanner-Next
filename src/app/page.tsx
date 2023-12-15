@@ -1,6 +1,4 @@
 import { Link } from "@nextui-org/react";
-import { Snippet } from "@nextui-org/react";
-import { Code } from "@nextui-org/react"
 import { button as buttonStyles } from "@nextui-org/react";
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
@@ -23,7 +21,8 @@ export default function Home() {
 
 			<div className="flex gap-3">
 				<Link
-					href="/"
+					isExternal
+					href="https://nextui.org"
 					className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}
 				>
 					Documentation
@@ -39,12 +38,21 @@ export default function Home() {
 			</div>
 
 			<div className="mt-8">
-				<Snippet hideSymbol hideCopyButton variant="flat">
-					<span>
-						Get started by editing <Code color="primary">app/page.tsx</Code>
-					</span>
-				</Snippet>
+				<Link isBlock href="/music" color="primary">
+					好音乐-随身听
+				</Link>
+				<Link isBlock href="/xiaohongshu" color="primary">
+					小红书图片去水印
+				</Link>
 			</div>
+
+			{/*<div className="mt-8">*/}
+			{/*	<Snippet hideSymbol hideCopyButton variant="flat">*/}
+			{/*		<span>*/}
+			{/*			Get started by editing <Code color="primary">app/page.tsx</Code>*/}
+			{/*		</span>*/}
+			{/*	</Snippet>*/}
+			{/*</div>*/}
 		</section>
 	);
 }
