@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server';
 import Response from "@/util/Response";
 import { type NextRequest } from 'next/server';
 import { getMusicInfoByQQ, searchMusicByQQ, getPlaylistByQQ } from "./QQMusic";
-import { searchMusicByNetease } from "./NeteaseMusic";
+import {getMusicInfoByNetease, searchMusicByNetease} from "./NeteaseMusic";
 import {PlaylistInfo} from "@/app/api/music/type";
 
 const handlers: {
@@ -22,7 +22,12 @@ async function getMusicInfo(request: NextRequest) {
   const { mid, platform } = getSearchParams(request);
   if (!mid) return Response.fail("Need a parameter named mid");
   else if (!platform) return Response.fail("Need a parameter named platform");
-  const musicInfo = await getMusicInfoByQQ(mid);
+  let musicInfo = null;
+  if (platform === "qq") {
+    musicInfo = await getMusicInfoByQQ(mid);
+  } else if (platform === "netease") {
+    musicInfo = await getMusicInfoByNetease(mid);
+  }
   return Response.ok(musicInfo);
 }
 
