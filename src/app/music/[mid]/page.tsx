@@ -40,7 +40,7 @@ export default function Page({params, searchParams}: Props) {
     if (!music.id) return;
     // else if (musicInfo && musicInfo.mid === mid) return;
     getMusicInfo(music);
-    history.pushState(null, "", `/music/qq/${music}`);
+    history.pushState(null, "", `/music/qq/${music.id}?platform=${music.platform}`);
   }, [music])
 
   if (music.platform === null) {
