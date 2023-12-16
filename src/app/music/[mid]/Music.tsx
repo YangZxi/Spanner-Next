@@ -11,13 +11,13 @@ import {
   RepeatOneIcon,
   ShuffleIcon, ListIcon
 } from "./Icon";
-import {MusicInfo} from "@/app/api/music/type";
+import {MusicInfo, Platform} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 
 type Props = {
   info: MusicInfo;
-  onRotateMusic: (type: "prev" | "next" | "random") => void;
+  onRotateMusic: (type: "prev" | "next" | "random", platform: Platform | null) => void;
 }
 
 type PlayMode = "list" | "single" | "random";
@@ -124,9 +124,7 @@ export default function Music({ info, onRotateMusic }: Props) {
           }}
           onEnded={() => {
             console.log(currentTime, duration)
-            if (currentTime >= duration) {
-              onRotateMusic("next");
-            }
+            onRotateMusic("next", null);
           }}
         >
           <source src={info.musicUrl} type="audio/mp4" />
@@ -232,7 +230,7 @@ export default function Music({ info, onRotateMusic }: Props) {
                 className="data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "prev")}
+                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "prev", null)}
               >
                 <PreviousIcon />
               </Button>
@@ -257,7 +255,7 @@ export default function Music({ info, onRotateMusic }: Props) {
                 className="data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "next")}
+                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "next", null)}
               >
                 <NextIcon />
               </Button>

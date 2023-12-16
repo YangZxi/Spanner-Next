@@ -1,7 +1,7 @@
 "use client";
 
-import Search from "@/app/music/qq/[mid]/Search";
-import SongList from "@/app/music/qq/[mid]/SongList";
+import Search from "@/app/music/[mid]/Search";
+import SongList from "@/app/music/[mid]/SongList";
 import {useState} from "react";
 import {Song} from "@/app/api/music/type";
 import {searchSong} from "@/app/music/searchSong";
