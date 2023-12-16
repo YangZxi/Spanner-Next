@@ -16,6 +16,7 @@ export default function Page() {
       placeholder="歌曲名 / 歌手 / 歌单链接"
       onSearch={(word) => {
         searchSong(word).then(data => {
+          console.log(data)
           setSongList(data ?? []);
         });
       }}

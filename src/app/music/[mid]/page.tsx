@@ -4,11 +4,11 @@ import {useEffect, useState} from "react";
 import SongList from "@/app/music/[mid]/SongList";
 import Search from "@/app/music/[mid]/Search";
 import Music from "@/app/music/[mid]/Music";
-import {MusicInfo, Platform, Song} from "@/app/api/music/type";
+import {MusicInfo, Platform, SearchMusicResponse, Song} from "@/app/api/music/type";
 import ClientOnly from "@/components/ClientOnly";
 import { searchSong } from "@/app/music/searchSong";
 
-type Music = {id: string, platform: Platform | null};
+export type MusicAndPlatform = {id: string, platform: Platform | null};
 
 type Props = {
   params: {
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export default function Page({params, searchParams}: Props) {
-  const [music, setMusic] = useState<Music>({
+  const [music, setMusic] = useState<MusicAndPlatform>({
     id: params.mid,
     platform: searchParams.platform ?? null,
   });
@@ -32,7 +32,11 @@ export default function Page({params, searchParams}: Props) {
   const [songList, setSongList] = useState<Song[]>(() => {
     if (typeof window !== 'undefined') {
       const songList = localStorage.getItem("songList");
-      return songList ? JSON.parse(songList) : [];
+      try {
+        return songList ? JSON.parse(songList) : [];
+      } catch (e) {
+        return [];
+      }
     }
   });
 
@@ -40,14 +44,14 @@ export default function Page({params, searchParams}: Props) {
     if (!music.id) return;
     // else if (musicInfo && musicInfo.mid === mid) return;
     getMusicInfo(music);
-    history.pushState(null, "", `/music/qq/${music.id}?platform=${music.platform}`);
+    history.pushState(null, "", `/music/${music.id}?platform=${music.platform}`);
   }, [music])
 
   if (music.platform === null) {
     return <div>页面加载出错</div>;
   }
 
-  const getMusicInfo = (music: Music) => {
+  const getMusicInfo = (music: MusicAndPlatform) => {
     fetch(`/api/music/info?mid=${music.id}&platform=${music.platform}`).then(res => res.json()).then(data => {
       if (data.code) {
         const musicInfo = data.data as MusicInfo;
@@ -63,19 +67,17 @@ export default function Page({params, searchParams}: Props) {
     });
   }
 
-  const rotateMusic = (type: "prev" | "next" | "random" | string, platform: Platform | null) => {
+  const rotateMusic = (type: "prev" | "next" | "random" | "id", nextMusic: MusicAndPlatform | undefined) => {
     if (songList.length === 1) {
-      setMusic({id: songList[0].mid, platform: platform ?? songList[0].platform});
-      return;
-    }
-    // 这是传 id 的情况
-    if (type.length > 6) {
-      setMusic({id: type, platform});
+      setMusic({id: songList[0].mid, platform: songList[0].platform});
       return;
     }
     let index = 0;
     const len = songList.length;
-    if (type === "random") {
+    if (type === "id" && nextMusic) {
+      setMusic(nextMusic);
+      return;
+    } else if (type === "random") {
       index = Math.floor(Math.random() * len);
     } else if (type === "prev" || type === "next") {
       for (let i = 0; i < len; i++) {
@@ -88,7 +90,7 @@ export default function Page({params, searchParams}: Props) {
       }
     }
     const newMid = songList[index].mid;
-    setMusic({id: newMid, platform: platform ?? songList[index].platform});
+    setMusic({id: newMid, platform: songList[index].platform});
   }
 
   return <div className="flex flex-wrap justify-center gap-4">
@@ -99,11 +101,11 @@ export default function Page({params, searchParams}: Props) {
         });
       }} />
     </div>
-    <div className="w-[610px] max-h-[324px] overflow-y-auto border-small px-1 py-2 order-1
+    <div className="w-[610px] border-small px-1 py-2 order-1
       md:order-3 xl:max-w-[420px]
       rounded-small border-default-200 dark:border-default-100">
       <ClientOnly>
-        <SongList songList={songList} playingMid={music.id} onRotateMusic={rotateMusic} />
+        <SongList songList={songList} playingMid={music.id} onRotateMusic={rotateMusic} maxHeight={300} />
       </ClientOnly>
     </div>
     <div className="w-full max-w-[610px] flex justify-center order-2 items-start" >

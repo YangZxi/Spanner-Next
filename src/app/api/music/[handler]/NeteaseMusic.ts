@@ -88,14 +88,14 @@ export async function searchMusicByNetease(word: string) {
 
   console.log(params)
   console.log(encSecKey)
-  const data = await fetch(`${url}`, {
+  const data: Song[] | null = await fetch(`${url}`, {
     method: "POST",
     headers: defaultHeaders
   })
     .then(res => res.json())
     .then(res => {
       if (res.code !== 200) return null;
-      return res.result?.songs.map((el: any) => {
+      const songList: Song[] = res.result?.songs.map((el: any) => {
         const info: Song = {
           mid: el.id + "",
           title: el.name,
@@ -114,6 +114,7 @@ export async function searchMusicByNetease(word: string) {
         }
         return info;
       });
+      return songList;
     }).catch(err => {
       console.log(err)
       return null;

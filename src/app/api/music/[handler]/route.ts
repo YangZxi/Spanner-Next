@@ -3,7 +3,7 @@ import Response from "@/util/Response";
 import { type NextRequest } from 'next/server';
 import { getMusicInfoByQQ, searchMusicByQQ, getPlaylistByQQ } from "./QQMusic";
 import {getMusicInfoByNetease, searchMusicByNetease} from "./NeteaseMusic";
-import {PlaylistInfo} from "@/app/api/music/type";
+import {Platform, PlaylistInfo, SearchMusicResponse, Song} from "@/app/api/music/type";
 
 const handlers: {
   [key: string]: (request: NextRequest) => Promise<NextResponse<any>>;
@@ -35,7 +35,7 @@ async function searchMusic(request: NextRequest) {
   const { w, platform } = getSearchParams(request);
   if (!w) return Response.fail("Need a parameter named w");
 
-  let data = null;
+  let data: Song[] = [];
   if (platform === "qq") {
     data = await searchMusicByQQ(w);
   } else if (platform === "netease") {
