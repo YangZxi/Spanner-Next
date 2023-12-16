@@ -1,4 +1,4 @@
-import {MusicInfo, Singer, Song} from "@/app/api/music/type";
+import {MusicInfo, Song} from "@/app/api/music/type";
 
 const forge = require("node-forge");
 const CryptoJS = require("crypto-js");
@@ -191,13 +191,12 @@ async function getMusicInfo(id: string) {
 
 export async function getMusicInfoByNetease(id: string) {
   const promise = Promise.all([getMusicInfo(id), getMusicUrl(id)]);
-  const musicInfo = await promise.then(([info, url]) => {
+  return await promise.then(([info, url]) => {
     return {
       ...info,
       musicUrl: url
     }
   });
-  return musicInfo;
 }
 
 // searchMusicByNetease("有何不可")

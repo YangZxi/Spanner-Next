@@ -87,7 +87,7 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
         ))}
       </ScrollShadow>
     );
-  }, [platforms, filterPlatform]);
+  }, [platforms, _sonList, filterPlatform]);
 
   return <>
     <Listbox

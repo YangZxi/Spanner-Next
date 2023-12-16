@@ -11,7 +11,7 @@ import {
   RepeatOneIcon,
   ShuffleIcon, ListIcon
 } from "./Icon";
-import {MusicInfo, Platform} from "@/app/api/music/type";
+import {MusicInfo} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 import type {MusicAndPlatform} from "./page"
