@@ -1,9 +1,9 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import SongList from "@/app/music/qq/[mid]/SongList";
-import Search from "@/app/music/qq/[mid]/Search";
-import Music from "@/app/music/qq/[mid]/Music";
+import SongList from "@/app/music/[mid]/SongList";
+import Search from "@/app/music/[mid]/Search";
+import Music from "@/app/music/[mid]/Music";
 import {MusicInfo, Song} from "@/app/api/music/type";
 import ClientOnly from "@/components/ClientOnly";
 import { searchSong } from "@/app/music/searchSong";

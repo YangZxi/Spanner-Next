@@ -1,12 +1,12 @@
 "use client";
 
 import {Image, Listbox, ListboxItem} from "@nextui-org/react";
-import type {Song} from "@/app/api/music/type";
+import type {Platform, Song} from "@/app/api/music/type";
 
 type Props = {
   songList?: Song[];
   playingMid?: string;
-  onRotateMusic?: (mid: string) => void;
+  onRotateMusic?: (mid: string, platform: Platform) => void;
 }
 
 export default function SongList({songList = [], playingMid, onRotateMusic}: Props) {
@@ -21,11 +21,11 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
         <ListboxItem
           key={item.mid}
           textValue={item.title}
-          href={onRotateMusic ? undefined : `/music/qq/${item.mid}`}
+          href={onRotateMusic ? undefined : `/music/${item.mid}`}
           className={`${playingMid === item.mid ? "bg-default-100 dark:bg-default-100" : ""}`}
           onClick={() => {
             if (onRotateMusic) {
-              onRotateMusic(item.mid);
+              onRotateMusic(item.mid, item.platform);
             }
           }}
         >
