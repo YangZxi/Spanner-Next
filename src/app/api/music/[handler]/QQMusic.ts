@@ -105,7 +105,7 @@ function parseLyrics(lyricRaw: string) {
 export async function searchMusicByQQ(word: string) {
   if (!word) return [];
   const url = "https://u.y.qq.com/cgi-bin/musicu.fcg";
-  const data = await fetch(url, {
+  const data: Song[] | null = await fetch(url, {
     method: "POST",
     body: JSON.stringify({
       "req_1": {
@@ -133,7 +133,7 @@ export async function searchMusicByQQ(word: string) {
       return (data?.song?.list as any[]).map(song => {
         let imageUrl = "";
         const albumId = song.album.mid;
-        console.log(song)
+        // console.log(song)
         if (albumId) {
           imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
         } else {

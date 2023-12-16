@@ -14,10 +14,11 @@ import {
 import {MusicInfo, Platform} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
+import type {MusicAndPlatform} from "./page"
 
 type Props = {
   info: MusicInfo;
-  onRotateMusic: (type: "prev" | "next" | "random", platform: Platform | null) => void;
+  onRotateMusic: (type: "prev" | "next" | "random", platform?: MusicAndPlatform) => void;
 }
 
 type PlayMode = "list" | "single" | "random";
@@ -36,7 +37,7 @@ export default function Music({ info, onRotateMusic }: Props) {
   const [paused, setPaused] = useState<boolean>(true);
 
   const [currentLyric, setCurrentLyric] = useState<string>(() => {
-    // console.log(info.lyric)
+    console.log(info)
     if (info.lyric.length > 0) {
       return info.lyric[0].text;
     }
@@ -77,7 +78,7 @@ export default function Music({ info, onRotateMusic }: Props) {
 
   const lyricsArray = info.lyric;
   const displayLyrics = (_curTime: number) => {
-    if (lyricsArray.length === 0) {
+    if (lyricsArray?.length === 0) {
       setCurrentLyric("当前歌曲暂无歌词提供");
       return;
     }
@@ -124,7 +125,7 @@ export default function Music({ info, onRotateMusic }: Props) {
           }}
           onEnded={() => {
             console.log(currentTime, duration)
-            onRotateMusic("next", null);
+            onRotateMusic("next");
           }}
         >
           <source src={info.musicUrl} type="audio/mp4" />
@@ -230,7 +231,7 @@ export default function Music({ info, onRotateMusic }: Props) {
                 className="data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "prev", null)}
+                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "prev")}
               >
                 <PreviousIcon />
               </Button>
@@ -255,7 +256,7 @@ export default function Music({ info, onRotateMusic }: Props) {
                 className="data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "next", null)}
+                onClick={() => onRotateMusic(playingMode === "random" ? "random" : "next")}
               >
                 <NextIcon />
               </Button>

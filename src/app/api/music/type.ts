@@ -39,3 +39,8 @@ export type PlaylistInfo = {
   logo: string;
   songList: Song[]
 }
+
+export type SearchMusicResponse = {
+  songList: Song[];
+  platform: Platform;
+}[]
