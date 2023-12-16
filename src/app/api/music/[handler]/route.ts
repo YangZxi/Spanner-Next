@@ -3,7 +3,8 @@ import Response from "@/util/Response";
 import { type NextRequest } from 'next/server';
 import { getMusicInfoByQQ, searchMusicByQQ, getPlaylistByQQ } from "./QQMusic";
 import {getMusicInfoByNetease, searchMusicByNetease} from "./NeteaseMusic";
-import {PlaylistInfo, Song} from "@/app/api/music/type";
+import {PlaylistInfo} from "@/app/api/music/type";
+import {Song} from "@/app/api/music/type";
 
 const handlers: {
   [key: string]: (request: NextRequest) => Promise<NextResponse<any>>;
