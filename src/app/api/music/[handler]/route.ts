@@ -67,6 +67,14 @@ async function searchMusicByQQ(request: NextRequest) {
       const data = result.req_1.data?.body ?? {};
       console.log('data', data?.song)
       return (data?.song?.list as any[]).map(song => {
+        let imageUrl = "";
+        const albumId = song.album.mid;
+        console.log(song)
+        if (albumId) {
+          imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
+        } else {
+          imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${song.singer[0].mid}.jpg?max_age=2592000`;
+        }
         const info: Song = {
           mid: song.mid,
           title: song.title,
@@ -76,7 +84,11 @@ async function searchMusicByQQ(request: NextRequest) {
             title: song.album.title,
             subtitle: song.album.subtitle,
           },
-          singer: (song.singer ?? []).map((singer: any) => singer.name),
+          singer: (song.singer ?? []).map((singer: any) => ({
+            mid: singer.mid,
+            name: singer.name,
+          })),
+          imageUrl,
         };
         return info;
       });
@@ -108,6 +120,13 @@ async function getPlaylistInfo(request: NextRequest) {
         name: cdlist.dissname,
         logo: cdlist.logo,
         songList: cdlist.songlist.map((song: any) => {
+          let imageUrl = "";
+          const albumId = song.album.mid;
+          if (albumId) {
+            imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
+          } else {
+            imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${song[0].mid}.jpg?max_age=2592000`;
+          }
           const info: Song = {
             mid: song.songmid,
             title: song.songname,
@@ -117,7 +136,11 @@ async function getPlaylistInfo(request: NextRequest) {
               title: song.albumname,
               subtitle: "",
             },
-            singer: song.singer.map((singer: any) => singer.name),
+            singer: song.singer.map((singer: any) => ({
+              mid: singer.mid,
+              name: singer.name
+            })),
+            imageUrl,
           };
           return info;
         })
