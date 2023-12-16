@@ -1,27 +1,19 @@
-# Next.js & NextUI Template
+<div align="center">
+<h1>Spanner-Next</h1>
 
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
+一个无需自建服务器的工具集合，[预览地址](https://tools.xiaosm.cn)  
+在线版QQ音乐播放器，小红书去水印
 
-## Technologies Used
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYangZxi%2FSpanner-Next&env=QQ_MUSIC_COOKIE&project-name=spanner-next&repository-name=Spanner-Next)
+</div>
 
-- [Next.js 13](https://nextjs.org/docs/getting-started)
+
+
+## 技术选型 / Technologies Used
+
+- [Next.js 14](https://nextjs.org/docs/getting-started)
 - [NextUI v2](https://nextui.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
-
-## How to Use
-
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
 
 ### Install dependencies
 
@@ -33,6 +25,15 @@ npm install
 
 ```bash
 npm run dev
+```
+
+### 环境变量 / Environment Variables
+在项目根目录创建 `.env.local` 文件，添加以下内容：  
+
+#### QQ音乐（可选）
+用于获取 VIP 歌曲的播放地址
+```ini
+QQ_MUSIC_COOKIE=你的QQ音乐cookie
 ```
 
 ## License
