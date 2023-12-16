@@ -40,6 +40,7 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
   // console.log(songList)
   useEffect(() => {
     setSongList(_sonList);
+    setFilterPlatform(new Set());
     if (!_sonList) return;
     const arr = _sonList.map(el => el.platform);
     const newPlatforms: Platform[] = [];
@@ -47,7 +48,7 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
       newPlatforms.push(el);
     });
     setPlatforms(newPlatforms);
-    setFilterPlatform(new Set(newPlatforms));
+    // setFilterPlatform(new Set(newPlatforms));
   }, [_sonList]);
 
   const topContent = React.useMemo(() => {
@@ -55,7 +56,7 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
       return null;
     }
     setSongList(() => {
-      return _sonList.filter(el => filterPlatform.has(el.platform));
+      return filterPlatform.size === 0 ? _sonList : _sonList.filter(el => filterPlatform.has(el.platform));
     });
     return (
       <ScrollShadow
