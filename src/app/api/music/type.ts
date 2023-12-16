@@ -1,3 +1,5 @@
+export type Platform = "qq" | "netease";
+
 export type Singer = {
   mid: string;
   name: string;
@@ -14,6 +16,7 @@ export type Song = {
   },
   singer: Singer[];
   imageUrl: string;
+  platform: Platform;
 }
 
 export type MusicInfo = {

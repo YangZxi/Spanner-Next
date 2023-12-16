@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import Response from "@/util/Response";
 import { type NextRequest } from 'next/server';
 import { getMusicInfoByQQ, searchMusicByQQ, getPlaylistByQQ } from "./QQMusic";
+import { searchMusicByNetease } from "./NeteaseMusic";
 import {PlaylistInfo} from "@/app/api/music/type";
 
 const handlers: {
@@ -11,8 +12,6 @@ const handlers: {
   info: getMusicInfo,
   playlist: getPlaylistInfo,
 }
-
-type Platform = "qq" | "netease";
 
 export async function GET(request: NextRequest, { params }: { params: { handler: string } }) {
   const { handler } = params;
@@ -28,10 +27,21 @@ async function getMusicInfo(request: NextRequest) {
 }
 
 async function searchMusic(request: NextRequest) {
-  const { w } = getSearchParams(request);
+  const { w, platform } = getSearchParams(request);
   if (!w) return Response.fail("Need a parameter named w");
-  const qqDataList = await searchMusicByQQ(w);
-  return Response.ok(qqDataList);
+
+  let data = null;
+  if (platform === "qq") {
+    data = await searchMusicByQQ(w);
+  } else if (platform === "netease") {
+    data = await searchMusicByNetease(w);
+  } else {
+    const promise = Promise.all([searchMusicByQQ(w), searchMusicByNetease(w)]);
+    data = await promise.then(([qq, netease]) => {
+      return [...qq, ...netease]
+    })
+  }
+  return Response.ok(data);
 }
 
 async function getPlaylistInfo(request: NextRequest) {

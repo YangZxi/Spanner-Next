@@ -1,6 +1,8 @@
 import base64 from "base64-js";
 import {MusicInfo, PlaylistInfo, Song} from "../type";
 
+const platform = "qq";
+
 const myHeaders = new Headers();
 // todo 由前端提供，或存入数据库
 myHeaders.append("Cookie", process.env.QQ_MUSIC_COOKIE ?? "");
@@ -101,7 +103,7 @@ function parseLyrics(lyricRaw: string) {
 }
 
 export async function searchMusicByQQ(word: string) {
-  if (!word) return new Error("Need a parameter named word");
+  if (!word) return [];
   const url = "https://u.y.qq.com/cgi-bin/musicu.fcg";
   const data = await fetch(url, {
     method: "POST",
@@ -127,7 +129,7 @@ export async function searchMusicByQQ(word: string) {
     .then(result => {
       if (result.code !== 0) return null;
       const data = result.req_1.data?.body ?? {};
-      console.log('data', data?.song)
+      // console.log('data', data?.song)
       return (data?.song?.list as any[]).map(song => {
         let imageUrl = "";
         const albumId = song.album.mid;
@@ -151,6 +153,7 @@ export async function searchMusicByQQ(word: string) {
             name: singer.name,
           })),
           imageUrl,
+          platform
         };
         return info;
       });
@@ -159,7 +162,7 @@ export async function searchMusicByQQ(word: string) {
       console.log('error', error)
       return null;
     });
-  return data ? data : [];
+  return data ?? [];
 }
 
 export async function getPlaylistByQQ(id: string) {
@@ -199,6 +202,7 @@ export async function getPlaylistByQQ(id: string) {
               name: singer.name
             })),
             imageUrl,
+            platform
           };
           return info;
         })
