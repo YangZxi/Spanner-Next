@@ -1,4 +1,4 @@
-import {MusicInfo, Singer, Song} from "@/app/api/music/type";
+import {MusicInfo, Song} from "@/app/api/music/type";
 
 const forge = require("node-forge");
 const CryptoJS = require("crypto-js");
@@ -88,14 +88,14 @@ export async function searchMusicByNetease(word: string) {
 
   console.log(params)
   console.log(encSecKey)
-  const data = await fetch(`${url}`, {
+  const data: Song[] | null = await fetch(`${url}`, {
     method: "POST",
     headers: defaultHeaders
   })
     .then(res => res.json())
     .then(res => {
       if (res.code !== 200) return null;
-      return res.result?.songs.map((el: any) => {
+      const songList: Song[] = res.result?.songs.map((el: any) => {
         const info: Song = {
           mid: el.id + "",
           title: el.name,
@@ -114,6 +114,7 @@ export async function searchMusicByNetease(word: string) {
         }
         return info;
       });
+      return songList;
     }).catch(err => {
       console.log(err)
       return null;
@@ -190,13 +191,12 @@ async function getMusicInfo(id: string) {
 
 export async function getMusicInfoByNetease(id: string) {
   const promise = Promise.all([getMusicInfo(id), getMusicUrl(id)]);
-  const musicInfo = await promise.then(([info, url]) => {
+  return await promise.then(([info, url]) => {
     return {
       ...info,
       musicUrl: url
     }
   });
-  return musicInfo;
 }
 
 // searchMusicByNetease("有何不可")

@@ -105,7 +105,7 @@ function parseLyrics(lyricRaw: string) {
 export async function searchMusicByQQ(word: string) {
   if (!word) return [];
   const url = "https://u.y.qq.com/cgi-bin/musicu.fcg";
-  const data = await fetch(url, {
+  const data: Song[] | null = await fetch(url, {
     method: "POST",
     body: JSON.stringify({
       "req_1": {
@@ -131,9 +131,9 @@ export async function searchMusicByQQ(word: string) {
       const data = result.req_1.data?.body ?? {};
       // console.log('data', data?.song)
       return (data?.song?.list as any[]).map(song => {
-        let imageUrl = "";
+        let imageUrl;
         const albumId = song.album.mid;
-        console.log(song)
+        // console.log(song)
         if (albumId) {
           imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
         } else {
@@ -167,7 +167,7 @@ export async function searchMusicByQQ(word: string) {
 
 export async function getPlaylistByQQ(id: string) {
   const url = `https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?type=1&utf8=1&disstid=${id}&loginUin=110110&format=json`;
-  const data = await fetch(url, {
+  return await fetch(url, {
     headers: {
       "Referer": "https://y.qq.com/n/yqq/playlist"
     }
@@ -181,7 +181,7 @@ export async function getPlaylistByQQ(id: string) {
         name: cdlist.dissname,
         logo: cdlist.logo,
         songList: cdlist.songlist.map((song: any) => {
-          let imageUrl = "";
+          let imageUrl: string;
           const albumId = song.album.mid;
           if (albumId) {
             imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
@@ -210,9 +210,9 @@ export async function getPlaylistByQQ(id: string) {
       return data;
     })
     .catch(error => {
+      console.log(error)
       return null;
     });
-  return data;
 }
 
 export async function getMusicInfoByQQ(mid: string) {
@@ -229,7 +229,7 @@ export async function getMusicInfoByQQ(mid: string) {
   const lyric = await getMusicLyric(mid);
   // console.log(lyric)
 
-  let imageUrl = "";
+  let imageUrl: string;
   const albumId = musicInfo.track_info.album.mid;
   if (albumId) {
     imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
