@@ -33,7 +33,7 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
             <Image
               radius="sm"
               fallbackSrc="/404.png"
-              src={`https://y.qq.com/music/photo_new/T002R300x300M000${item.album.mid ?? ""}.jpg?max_age=2592000`}
+              src={item.imageUrl}
               alt={item.album.title}
               classNames={{
                 img: "w-[48px] h-[48px] min-w-[48px]",
@@ -42,7 +42,7 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
             />
             <div className="flex flex-col flex-grow overflow-hidden">
               <span className="text-small">{item.title}</span>
-              <span className="text-tiny text-default-400">{item.singer[0]} - {item.album.title}</span>
+              <span className="text-tiny text-default-400">{item.singer.map(el => el.name).join(" & ")}{item.album.title && ` - ${item.album.title}`}</span>
             </div>
           </div>
         </ListboxItem>

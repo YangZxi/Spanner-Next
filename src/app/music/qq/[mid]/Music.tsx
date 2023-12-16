@@ -123,7 +123,10 @@ export default function Music({ info, onRotateMusic }: Props) {
             setCurrentTime(time);
           }}
           onEnded={() => {
-            onRotateMusic("next");
+            console.log(currentTime, duration)
+            if (currentTime >= duration) {
+              onRotateMusic("next");
+            }
           }}
         >
           <source src={info.musicUrl} type="audio/mp4" />
@@ -167,7 +170,7 @@ export default function Music({ info, onRotateMusic }: Props) {
                   <RollText className="font-semibold text-foreground/90">{info.title}
                     {(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}
                   </RollText>
-                  <p className="text-small text-foreground/80">{info.singer}</p>
+                  <p className="text-small text-foreground/80">{(info.singer ?? []).map(el => el.name).join(" & ")}</p>
                   <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
               </div>

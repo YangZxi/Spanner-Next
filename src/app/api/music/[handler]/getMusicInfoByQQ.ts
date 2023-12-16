@@ -103,14 +103,24 @@ function parseLyrics(lyricRaw: string) {
 export default async function info(mid: string) {
   const musicInfo = await getMusicInfo(mid);
   const { track_info: trackInfo } = musicInfo;
-  const imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${musicInfo.track_info.album.mid ?? ""}.jpg?max_age=2592000`;
   const title = trackInfo.title;
   const subtitle = trackInfo.subtitle;
-  const singer = trackInfo.singer[0].name;
+  const singer = trackInfo.singer.map((singer: any) => ({
+    mid: singer.mid,
+    name: singer.name
+  }));
 
   const musicUrl = await getMusicUrl(mid);
   const lyric = await getMusicLyric(mid);
   // console.log(lyric)
+
+  let imageUrl = "";
+  const albumId = musicInfo.track_info.album.mid;
+  if (albumId) {
+    imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
+  } else {
+    imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${singer[0].mid}.jpg?max_age=2592000`;
+  }
 
   const info: MusicInfo = {
     mid,
