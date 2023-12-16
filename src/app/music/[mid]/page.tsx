@@ -4,18 +4,24 @@ import {useEffect, useState} from "react";
 import SongList from "@/app/music/[mid]/SongList";
 import Search from "@/app/music/[mid]/Search";
 import Music from "@/app/music/[mid]/Music";
-import {MusicInfo, Song} from "@/app/api/music/type";
+import {MusicInfo, Platform, Song} from "@/app/api/music/type";
 import ClientOnly from "@/components/ClientOnly";
 import { searchSong } from "@/app/music/searchSong";
+
+type Music = {id: string, platform: Platform | null};
 
 type Props = {
   params: {
     mid: string
-  }
+  };
+  searchParams: { platform: Platform, [key: string]: string | string[] | undefined }
 }
 
-export default function Page({params}: Props) {
-  const [mid, setMid] = useState<string>(params.mid);
+export default function Page({params, searchParams}: Props) {
+  const [music, setMusic] = useState<Music>({
+    id: params.mid,
+    platform: searchParams.platform ?? null,
+  });
   const [musicInfo, setMusicInfo] = useState<MusicInfo>(() => {
     if (typeof window !== 'undefined') {
       // Perform localStorage action
@@ -31,14 +37,18 @@ export default function Page({params}: Props) {
   });
 
   useEffect(() => {
-    if (!mid) return;
+    if (!music.id) return;
     // else if (musicInfo && musicInfo.mid === mid) return;
-    getMusicInfo(mid);
-    history.pushState(null, "", `/music/qq/${mid}`);
-  }, [mid])
+    getMusicInfo(music);
+    history.pushState(null, "", `/music/qq/${music}`);
+  }, [music])
 
-  const getMusicInfo = (mid: string) => {
-    fetch(`/api/music/info?mid=${mid}`).then(res => res.json()).then(data => {
+  if (music.platform === null) {
+    return <div>页面加载出错</div>;
+  }
+
+  const getMusicInfo = (music: Music) => {
+    fetch(`/api/music/info?mid=${music.id}&platform=${music.platform}`).then(res => res.json()).then(data => {
       if (data.code) {
         const musicInfo = data.data as MusicInfo;
         setMusicInfo(musicInfo);
@@ -53,13 +63,14 @@ export default function Page({params}: Props) {
     });
   }
 
-  const rotateMusic = (type: "prev" | "next" | "random" | string) => {
+  const rotateMusic = (type: "prev" | "next" | "random" | string, platform: Platform | null) => {
     if (songList.length === 1) {
-      setMid(songList[0].mid);
+      setMusic({id: songList[0].mid, platform: platform ?? songList[0].platform});
       return;
     }
+    // 这是传 id 的情况
     if (type.length > 6) {
-      setMid(type);
+      setMusic({id: type, platform});
       return;
     }
     let index = 0;
@@ -68,7 +79,7 @@ export default function Page({params}: Props) {
       index = Math.floor(Math.random() * len);
     } else if (type === "prev" || type === "next") {
       for (let i = 0; i < len; i++) {
-        if (songList[i].mid === mid) {
+        if (songList[i].mid === music.id) {
           index = type === "prev" ? i - 1 : i + 1;
           if (index < 0) index = len - 1;
           else if (index >= len) index = 0;
@@ -77,7 +88,7 @@ export default function Page({params}: Props) {
       }
     }
     const newMid = songList[index].mid;
-    setMid(newMid);
+    setMusic({id: newMid, platform: platform ?? songList[index].platform});
   }
 
   return <div className="flex flex-wrap justify-center gap-4">
@@ -92,7 +103,7 @@ export default function Page({params}: Props) {
       md:order-3 xl:max-w-[420px]
       rounded-small border-default-200 dark:border-default-100">
       <ClientOnly>
-        <SongList songList={songList} playingMid={mid} onRotateMusic={rotateMusic} />
+        <SongList songList={songList} playingMid={music.id} onRotateMusic={rotateMusic} />
       </ClientOnly>
     </div>
     <div className="w-full max-w-[610px] flex justify-center order-2 items-start" >

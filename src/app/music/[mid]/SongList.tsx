@@ -9,6 +9,13 @@ type Props = {
   onRotateMusic?: (mid: string, platform: Platform) => void;
 }
 
+const PLATFORM_MAP: {
+  [key in Platform]: string;
+} = {
+  qq: "QQ音乐",
+  netease: "网易云"
+}
+
 export default function SongList({songList = [], playingMid, onRotateMusic}: Props) {
   // console.log(songList)
 
@@ -21,7 +28,7 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
         <ListboxItem
           key={item.mid}
           textValue={item.title}
-          href={onRotateMusic ? undefined : `/music/${item.mid}`}
+          href={onRotateMusic ? undefined : `/music/${item.mid}?platform=${item.platform}`}
           className={`${playingMid === item.mid ? "bg-default-100 dark:bg-default-100" : ""}`}
           onClick={() => {
             if (onRotateMusic) {
@@ -29,7 +36,7 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
             }
           }}
         >
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center relative">
             <Image
               radius="sm"
               fallbackSrc="/404.png"
@@ -43,6 +50,9 @@ export default function SongList({songList = [], playingMid, onRotateMusic}: Pro
             <div className="flex flex-col flex-grow overflow-hidden">
               <span className="text-small">{item.title}</span>
               <span className="text-tiny text-default-400">{item.singer.map(el => el.name).join(" & ")}{item.album.title && ` - ${item.album.title}`}</span>
+            </div>
+            <div className="absolute top-0 right-0 text-xs">
+              {PLATFORM_MAP[item.platform]}
             </div>
           </div>
         </ListboxItem>
