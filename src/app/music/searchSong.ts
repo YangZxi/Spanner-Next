@@ -1,5 +1,5 @@
-import {PlaylistInfo, Song} from "@/app/api/music/type";
-import {NextResponseBody, ResponseBody} from "@/types";
+import {PlaylistInfo, Song, Platform} from "@/app/api/music/type";
+import {ResponseBody} from "@/types";
 
 async function search(word: string) {
   const res = await fetch(`/api/music/search?w=${word}`);
@@ -13,9 +13,9 @@ async function search(word: string) {
   return data.data;
 }
 
-async function searchPlaylist(id: string) {
+async function searchPlaylist(id: string, platform: Platform) {
   if (!id) return null;
-  const res = await fetch(`/api/music/playlist?id=${id}`);
+  const res = await fetch(`/api/music/playlist?id=${id}&platform=${platform}`);
   const data = await res.json() as ResponseBody<PlaylistInfo>;
   const songList = data.data.songList ?? [];
   // console.log(songList)
@@ -30,6 +30,7 @@ async function searchPlaylist(id: string) {
 export async function searchSong(word: string) {
   if (word.startsWith("http")) {
     let id = "";
+    let platform: Platform = "qq";
     // https://y.qq.com/n/ryqq/playlist/8715942454
     if (word.startsWith("https://y.qq.com/n/ryqq/playlist/")) {
       id = word.replace("https://y.qq.com/n/ryqq/playlist/", "");
@@ -38,7 +39,7 @@ export async function searchSong(word: string) {
     else if (word.startsWith("https://i.y.qq.com/n2/m/share/details/taoge.html")) {
       id = new URL(word).searchParams.get("id") ?? "";
     }
-    return searchPlaylist(id);
+    return searchPlaylist(id, platform);
   } else {
     return search(word);
   }

@@ -32,7 +32,7 @@ export function ResponsiveText({ text, defaultSize = 14, className = "", ...prop
     };
 
     adjustFontSize();
-  }, [text, contentWidth]);
+  }, [text, contentWidth, defaultSize]);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
