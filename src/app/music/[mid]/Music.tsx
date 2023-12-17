@@ -183,19 +183,6 @@ export default function Music({ info, onRotateMusic }: Props) {
                   <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
               </div>
-              <Button
-                isIconOnly
-                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-1 translate-x-1"
-                radius="full"
-                variant="light"
-                size="sm"
-                onPress={() => setLiked((v) => !v)}
-              >
-                <HeartIcon
-                  className={liked ? "[&>path]:stroke-transparent" : ""}
-                  fill={liked ? "currentColor" : "none"}
-                />
-              </Button>
             </div>
 
             <div className="flex flex-col mt-3 gap-1">
@@ -232,10 +219,16 @@ export default function Music({ info, onRotateMusic }: Props) {
             <div className="flex w-full items-center justify-center">
               <Button
                 isIconOnly
-                className="invisible"
+                className="text-default-900/60 data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-              />
+                onPress={() => setLiked((v) => !v)}
+              >
+                <HeartIcon
+                  className={liked ? "[&>path]:stroke-transparent" : ""}
+                  fill={liked ? "#e24771" : "none"}
+                />
+              </Button>
               <Button
                 isIconOnly
                 className="data-[hover]:bg-foreground/10"
