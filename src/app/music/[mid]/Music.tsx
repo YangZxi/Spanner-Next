@@ -76,8 +76,8 @@ export default function Music({ info, onRotateMusic }: Props) {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   }
 
-  const lyricsArray = info.lyric;
   const displayLyrics = (_curTime: number) => {
+    const lyricsArray = info.lyric;
     if (lyricsArray?.length === 0) {
       setCurrentLyric("当前歌曲暂无歌词提供");
       return;
@@ -122,6 +122,9 @@ export default function Music({ info, onRotateMusic }: Props) {
             displayLyrics(time);
             if (dragging) return;
             setCurrentTime(time);
+          }}
+          onLoadedData={() => {
+            setCurrentLyric(info.title + " - " + info.singer.map(el => el.name).join(" & "));
           }}
           onEnded={() => {
             console.log(currentTime, duration)
