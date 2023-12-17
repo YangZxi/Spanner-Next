@@ -1,6 +1,6 @@
 'use client';
 
-import {useState, useRef, useEffect, ReactElement} from "react";
+import React, {useState, useRef, useEffect, ReactElement} from "react";
 import {Button, Card, CardBody, Image, Slider} from "@nextui-org/react";
 import {
   HeartIcon,
@@ -15,6 +15,8 @@ import {MusicDetail} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 import type {MusicAndPlatform} from "./page"
+import CornerIcon from "@/components/CornerIcon";
+import {PLATFORM_ICON} from "@/app/music/[mid]/common";
 
 type Props = {
   info: MusicDetail;
@@ -159,6 +161,7 @@ export default function Music({ info, onRotateMusic }: Props) {
           <div className="flex flex-col col-span-6 sm:col-span-8">
             <div className="flex justify-between items-start">
               <div className="grid grid-cols-12 gap-1">
+                <CornerIcon>{PLATFORM_ICON[info.platform]}</CornerIcon>
                 <div className="col-span-4 block sm:hidden">
                   <Image
                     // https://y.qq.com/music/photo_new/T002R300x300M0000049MVh824D7bM.jpg?max_age=2592000

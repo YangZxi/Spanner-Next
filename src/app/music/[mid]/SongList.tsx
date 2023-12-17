@@ -4,8 +4,10 @@ import {Image, Listbox as _Listbox, ListboxItem, ScrollShadow, Chip} from "@next
 import type {Platform, Song} from "@/app/api/music/type";
 import type {MusicAndPlatform} from "./page"
 import React, {useState, useEffect} from "react";
-import {NeteaseIcon, QQMusicIcon, VIP} from "./Icon";
+import {VIP} from "./Icon";
 import styled from "styled-components";
+import CornerIcon from "@/components/CornerIcon";
+import {PLATFORM_ICON} from "@/app/music/[mid]/common";
 
 type Props = {
   maxHeight?: number;
@@ -19,11 +21,6 @@ const PLATFORM_LABEL: {
 } = {
   qq: "QQ音乐",
   netease: "网易云"
-}
-
-const PLATFORM_ICON: Record<Platform, React.ReactNode> = {
-  qq: <QQMusicIcon />,
-  netease: <NeteaseIcon />,
 }
 
 const Listbox = styled(_Listbox)<{ $maxHeight?: number }>`
@@ -116,7 +113,8 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
             }
           }}
         >
-          <div className="flex gap-2 items-center relative">
+
+          <div className="flex gap-2 items-center">
             <Image
               radius="sm"
               fallbackSrc="/404.png"
@@ -134,9 +132,7 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
                 {item.singer.map(el => el.name).join(" & ")}{item.album.title && ` - ${item.album.title}`}
               </span>
             </div>
-            <div className="absolute top-0 right-0 text-xs">
-              {PLATFORM_LABEL[item.platform]}
-            </div>
+            <CornerIcon>{PLATFORM_ICON[item.platform]}</CornerIcon>
           </div>
         </ListboxItem>
       ))) : (<ListboxItem key="none">暂无歌曲</ListboxItem>)}

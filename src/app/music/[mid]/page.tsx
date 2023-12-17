@@ -102,7 +102,7 @@ export default function Page({params, searchParams}: Props) {
         });
       }} />
     </div>
-    <div className="max-w-sm border-small px-1 py-2 order-1
+    <div className="w-full border-small px-1 py-2 order-1
       md:order-3 xl:max-w-[420px]
       rounded-small border-default-200 dark:border-default-100">
       <ClientOnly>
