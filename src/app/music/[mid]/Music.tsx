@@ -1,6 +1,6 @@
 'use client';
 
-import {useState, useRef, useEffect, ReactElement} from "react";
+import React, {useState, useRef, useEffect, ReactElement} from "react";
 import {Button, Card, CardBody, Image, Slider} from "@nextui-org/react";
 import {
   HeartIcon,
@@ -9,15 +9,17 @@ import {
   PauseCircleIcon,
   PreviousIcon,
   RepeatOneIcon,
-  ShuffleIcon, ListIcon
+  ShuffleIcon, ListIcon, VIP
 } from "./Icon";
-import {MusicInfo} from "@/app/api/music/type";
+import {MusicDetail} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 import type {MusicAndPlatform} from "./page"
+import CornerIcon from "@/components/CornerIcon";
+import {PLATFORM_ICON} from "@/app/music/[mid]/common";
 
 type Props = {
-  info: MusicInfo;
+  info: MusicDetail;
   onRotateMusic: (type: "prev" | "next" | "random", platform?: MusicAndPlatform) => void;
 }
 
@@ -76,8 +78,8 @@ export default function Music({ info, onRotateMusic }: Props) {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   }
 
-  const lyricsArray = info.lyric;
   const displayLyrics = (_curTime: number) => {
+    const lyricsArray = info.lyric;
     if (lyricsArray?.length === 0) {
       setCurrentLyric("当前歌曲暂无歌词提供");
       return;
@@ -123,6 +125,9 @@ export default function Music({ info, onRotateMusic }: Props) {
             if (dragging) return;
             setCurrentTime(time);
           }}
+          onLoadedData={() => {
+            setCurrentLyric(info.title + " - " + info.singer.map(el => el.name).join(" & "));
+          }}
           onEnded={() => {
             console.log(currentTime, duration)
             onRotateMusic("next");
@@ -156,6 +161,7 @@ export default function Music({ info, onRotateMusic }: Props) {
           <div className="flex flex-col col-span-6 sm:col-span-8">
             <div className="flex justify-between items-start">
               <div className="grid grid-cols-12 gap-1">
+                <CornerIcon>{PLATFORM_ICON[info.platform]}</CornerIcon>
                 <div className="col-span-4 block sm:hidden">
                   <Image
                     // https://y.qq.com/music/photo_new/T002R300x300M0000049MVh824D7bM.jpg?max_age=2592000
@@ -173,23 +179,13 @@ export default function Music({ info, onRotateMusic }: Props) {
                   <RollText className="font-semibold text-foreground/90">{info.title}
                     {(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}
                   </RollText>
-                  <p className="text-small text-foreground/80">{(info.singer ?? []).map(el => el.name).join(" & ")}</p>
+                  <p className="text-small text-foreground/80">
+                    {info.vip && <VIP />}
+                    {(info.singer ?? []).map(el => el.name).join(" & ")}
+                  </p>
                   <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
               </div>
-              <Button
-                isIconOnly
-                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-1 translate-x-1"
-                radius="full"
-                variant="light"
-                size="sm"
-                onPress={() => setLiked((v) => !v)}
-              >
-                <HeartIcon
-                  className={liked ? "[&>path]:stroke-transparent" : ""}
-                  fill={liked ? "currentColor" : "none"}
-                />
-              </Button>
             </div>
 
             <div className="flex flex-col mt-3 gap-1">
@@ -226,10 +222,16 @@ export default function Music({ info, onRotateMusic }: Props) {
             <div className="flex w-full items-center justify-center">
               <Button
                 isIconOnly
-                className="invisible"
+                className="text-default-900/60 data-[hover]:bg-foreground/10"
                 radius="full"
                 variant="light"
-              />
+                onPress={() => setLiked((v) => !v)}
+              >
+                <HeartIcon
+                  className={liked ? "[&>path]:stroke-transparent" : ""}
+                  fill={liked ? "#e24771" : "none"}
+                />
+              </Button>
               <Button
                 isIconOnly
                 className="data-[hover]:bg-foreground/10"

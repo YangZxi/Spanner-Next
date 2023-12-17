@@ -17,9 +17,10 @@ export type Song = {
   singer: Singer[];
   imageUrl: string;
   platform: Platform;
+  vip: boolean;
 }
 
-export type MusicInfo = {
+export type MusicDetail = {
   mid: string;
   title: string;
   subtitle: string;
@@ -28,9 +29,11 @@ export type MusicInfo = {
   musicUrl: string;
   duration: number;
   lyric: {
-    time: number,
-    text: string
+    time: number;
+    text: string;
   }[];
+  vip: boolean;
+  platform: Platform;
 }
 
 export type PlaylistInfo = {

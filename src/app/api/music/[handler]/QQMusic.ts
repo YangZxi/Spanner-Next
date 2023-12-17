@@ -1,5 +1,5 @@
 import base64 from "base64-js";
-import {MusicInfo, PlaylistInfo, Song} from "../type";
+import {MusicDetail, PlaylistInfo, Song} from "../type";
 
 const platform = "qq";
 
@@ -153,6 +153,7 @@ export async function searchMusicByQQ(word: string) {
             name: singer.name,
           })),
           imageUrl,
+          vip: song.pay.pay_play === 1,
           platform
         };
         return info;
@@ -202,6 +203,7 @@ export async function getPlaylistByQQ(id: string) {
               name: singer.name
             })),
             imageUrl,
+            vip: song.pay.payplay === 1,
             platform
           };
           return info;
@@ -236,8 +238,7 @@ export async function getMusicInfoByQQ(mid: string) {
   } else {
     imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${singer[0].mid}.jpg?max_age=2592000`;
   }
-
-  const info: MusicInfo = {
+  const info: MusicDetail = {
     mid,
     title,
     subtitle,
@@ -245,7 +246,9 @@ export async function getMusicInfoByQQ(mid: string) {
     imageUrl,
     musicUrl,
     duration: trackInfo.interval,
-    lyric: lyric?.lyric ?? []
+    lyric: lyric?.lyric ?? [],
+    vip: trackInfo.pay.pay_play === 1,
+    platform
   }
   return info;
 }

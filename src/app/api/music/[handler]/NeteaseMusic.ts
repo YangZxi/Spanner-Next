@@ -1,4 +1,4 @@
-import {MusicInfo, Song} from "@/app/api/music/type";
+import {MusicDetail, Song} from "@/app/api/music/type";
 
 const forge = require("node-forge");
 const CryptoJS = require("crypto-js");
@@ -110,6 +110,7 @@ export async function searchMusicByNetease(word: string) {
             name: singer.name
           })),
           imageUrl: "",
+          vip: el.fee === 1,
           platform
         }
         return info;
@@ -125,7 +126,7 @@ export async function searchMusicByNetease(word: string) {
 async function getMusicUrl(id: string) {
   const body = {
     ids: [String(id)],
-    br: 999000
+    br: 320000 // 999000
   }
   const encryptData = eapi("/api/song/enhance/player/url", body);
   const params = encodeURIComponent(encryptData.params);
@@ -167,7 +168,7 @@ async function getMusicInfo(id: string) {
     .then(({songs, code}) => {
       if (code !== 200) return null;
       const song = songs[0];
-      const info: MusicInfo = {
+      const info: MusicDetail = {
         mid: song.id + "",
         title: song.name,
         subtitle: song.alia[0] ?? "",
@@ -179,6 +180,8 @@ async function getMusicInfo(id: string) {
         musicUrl: "",
         duration: song.dt / 1000,
         lyric: [],
+        vip: song.fee === 1,
+        platform
       }
       return info;
     })
