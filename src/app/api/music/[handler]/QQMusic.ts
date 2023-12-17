@@ -48,7 +48,7 @@ async function getMusicUrl(mid: string) {
 }
 
 async function getMusicLyric(mid: string) {
-  const uin = "1282381264";
+  const uin = "110110";
   const url = `https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=${mid}&g_tk=5381&loginUin=${uin}&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0`;
   return await fetch(url, {
     headers: {
@@ -57,6 +57,7 @@ async function getMusicLyric(mid: string) {
   })
     .then(response => response.json())
     .then(result => {
+      // console.log(result)
       return {
         lyric: parseLyrics(result.lyric),
         trans: result.trans
@@ -66,15 +67,16 @@ async function getMusicLyric(mid: string) {
 }
 
 // 正则表达式用于匹配时间戳和歌词文本
-const regex = /\[([\d:.]*)](.*)$/;
+const regex = /\[([\d:.]*)](.*)/;
 
 function parseLyrics(lyricRaw: string) {
-  const lyricsText = new TextDecoder('utf-8').decode(base64.toByteArray(lyricRaw))
+  // console.log(lyricRaw)
+  const lyricsText = new Buffer(lyricRaw, 'base64').toString();
   // console.log(lyricsText)
   const lyricsArray = [];
 
   // 分割歌词文本为行
-  const lines = lyricsText.split('\n');
+  const lines = lyricsText.replaceAll("\r", "\n").split("\n");
   // console.log(lines)
   for (const line of lines) {
     const match = line.match(regex);
