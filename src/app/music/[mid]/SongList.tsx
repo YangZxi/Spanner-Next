@@ -4,7 +4,7 @@ import {Image, Listbox as _Listbox, ListboxItem, ScrollShadow, Chip} from "@next
 import type {Platform, Song} from "@/app/api/music/type";
 import type {MusicAndPlatform} from "./page"
 import React, {useState, useEffect} from "react";
-import {NeteaseIcon, QQMusicIcon} from "./Icon";
+import {NeteaseIcon, QQMusicIcon, VIP} from "./Icon";
 import styled from "styled-components";
 
 type Props = {
@@ -129,7 +129,10 @@ export default function SongList({maxHeight, songList: _sonList = [], playingMid
             />
             <div className="flex flex-col flex-grow overflow-hidden">
               <span className="text-small">{item.title}</span>
-              <span className="text-tiny text-default-400">{item.singer.map(el => el.name).join(" & ")}{item.album.title && ` - ${item.album.title}`}</span>
+              <span className="text-tiny text-default-400">
+                {item.vip && <VIP />}
+                {item.singer.map(el => el.name).join(" & ")}{item.album.title && ` - ${item.album.title}`}
+              </span>
             </div>
             <div className="absolute top-0 right-0 text-xs">
               {PLATFORM_LABEL[item.platform]}

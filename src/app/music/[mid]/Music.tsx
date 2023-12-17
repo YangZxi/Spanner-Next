@@ -9,15 +9,15 @@ import {
   PauseCircleIcon,
   PreviousIcon,
   RepeatOneIcon,
-  ShuffleIcon, ListIcon
+  ShuffleIcon, ListIcon, VIP
 } from "./Icon";
-import {MusicInfo} from "@/app/api/music/type";
+import {MusicDetail} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 import type {MusicAndPlatform} from "./page"
 
 type Props = {
-  info: MusicInfo;
+  info: MusicDetail;
   onRotateMusic: (type: "prev" | "next" | "random", platform?: MusicAndPlatform) => void;
 }
 
@@ -176,7 +176,10 @@ export default function Music({ info, onRotateMusic }: Props) {
                   <RollText className="font-semibold text-foreground/90">{info.title}
                     {(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}
                   </RollText>
-                  <p className="text-small text-foreground/80">{(info.singer ?? []).map(el => el.name).join(" & ")}</p>
+                  <p className="text-small text-foreground/80">
+                    {info.vip && <VIP />}
+                    {(info.singer ?? []).map(el => el.name).join(" & ")}
+                  </p>
                   <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
               </div>

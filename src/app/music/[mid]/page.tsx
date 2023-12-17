@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import SongList from "@/app/music/[mid]/SongList";
 import Search from "@/app/music/[mid]/Search";
 import Music from "@/app/music/[mid]/Music";
-import {MusicInfo, Platform, Song} from "@/app/api/music/type";
+import {MusicDetail, Platform, Song} from "@/app/api/music/type";
 import ClientOnly from "@/components/ClientOnly";
 import { searchSong } from "@/app/music/searchSong";
 
@@ -22,7 +22,7 @@ export default function Page({params, searchParams}: Props) {
     id: params.mid,
     platform: searchParams.platform ?? null,
   });
-  const [musicInfo, setMusicInfo] = useState<MusicInfo>(() => {
+  const [musicInfo, setMusicInfo] = useState<MusicDetail>(() => {
     if (typeof window !== 'undefined') {
       // Perform localStorage action
       const musicInfo = localStorage.getItem("musicInfo");
@@ -54,7 +54,7 @@ export default function Page({params, searchParams}: Props) {
   const getMusicInfo = (music: MusicAndPlatform) => {
     fetch(`/api/music/info?mid=${music.id}&platform=${music.platform}`).then(res => res.json()).then(data => {
       if (data.code) {
-        const musicInfo = data.data as MusicInfo;
+        const musicInfo = data.data as MusicDetail;
         musicInfo.musicUrl = musicInfo.musicUrl.replace("http://", "https://");
         setMusicInfo(musicInfo);
         console.log(musicInfo)
