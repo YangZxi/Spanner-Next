@@ -127,8 +127,12 @@ export default function Music({ info, onRotateMusic }: Props) {
             console.log(currentTime, duration)
             onRotateMusic("next");
           }}
+          onError={(err) => {
+            console.log(err)
+            setCurrentLyric("歌曲加载出错");
+          }}
         >
-          <source src={info.musicUrl} type="audio/mp4" />
+          <source src={info.musicUrl} type="audio/mp3" />
         </audio>
       </div>
       <CardBody>

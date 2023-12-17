@@ -55,6 +55,7 @@ export default function Page({params, searchParams}: Props) {
     fetch(`/api/music/info?mid=${music.id}&platform=${music.platform}`).then(res => res.json()).then(data => {
       if (data.code) {
         const musicInfo = data.data as MusicInfo;
+        musicInfo.musicUrl = musicInfo.musicUrl.replace("http://", "https://");
         setMusicInfo(musicInfo);
         console.log(musicInfo)
         localStorage.setItem("musicInfo", JSON.stringify(musicInfo));
