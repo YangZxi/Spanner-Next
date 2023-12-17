@@ -1,4 +1,3 @@
-import base64 from "base64-js";
 import {MusicDetail, PlaylistInfo, Song} from "../type";
 
 const platform = "qq";
@@ -178,6 +177,7 @@ export async function getPlaylistByQQ(id: string) {
     .then(response => response.json())
     .then(result => {
       if (!result || result.code !== 0) return null;
+      // console.log(re)
       const cdlist = result.cdlist[0];
       const data: PlaylistInfo = {
         playlistId: cdlist.disstid,
@@ -185,11 +185,11 @@ export async function getPlaylistByQQ(id: string) {
         logo: cdlist.logo,
         songList: cdlist.songlist.map((song: any) => {
           let imageUrl: string;
-          const albumId = song.album.mid;
+          const albumId = song.albummid;
           if (albumId) {
             imageUrl = `https://y.qq.com/music/photo_new/T002R300x300M000${albumId}.jpg?max_age=2592000`;
           } else {
-            imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${song[0].mid}.jpg?max_age=2592000`;
+            imageUrl = `https://y.qq.com/music/photo_new/T001R300x300M000${song.mid}.jpg?max_age=2592000`;
           }
           const info: Song = {
             mid: song.songmid,

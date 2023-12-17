@@ -54,7 +54,7 @@ async function getPlaylistInfo(request: NextRequest) {
   const { id, platform } = getSearchParams(request);
   if (!id) return Response.fail("Need a parameter named Playlist id");
   else if (!platform) return Response.fail("Need a parameter named platform");
-  console.log(id)
+  console.log(id, platform)
   let data: PlaylistInfo | null;
   if (platform === "qq") {
     data = await getPlaylistByQQ(id);
