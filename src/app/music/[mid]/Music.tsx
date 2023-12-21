@@ -19,7 +19,7 @@ import CornerIcon from "@/components/CornerIcon";
 import {PLATFORM_ICON} from "@/app/music/[mid]/common";
 
 type Props = {
-  info: MusicDetail;
+  musicInfo: MusicDetail;
   onRotateMusic: (type: "prev" | "next" | "random", platform?: MusicAndPlatform) => void;
 }
 
@@ -33,15 +33,27 @@ const playModeIcon: {
   random: <ShuffleIcon />
 }
 
-export default function Music({ info, onRotateMusic }: Props) {
+function changeMediaSession(musicInfo: MusicDetail) {
+  if (!("mediaSession" in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: musicInfo.title,
+    artist: musicInfo.singer.map(el => el.name).join(" & "),
+    album: musicInfo.subtitle,
+    artwork: [
+      {src: musicInfo.imageUrl, sizes: "", type: "image/png"},
+    ],
+  });
+}
+
+export default function Music({ musicInfo, onRotateMusic }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [liked, setLiked] = useState(false);
   const [paused, setPaused] = useState<boolean>(true);
 
   const [currentLyric, setCurrentLyric] = useState<string>(() => {
-    console.log(info)
-    if (info.lyric.length > 0) {
-      return info.lyric[0].text;
+    console.log(musicInfo)
+    if (musicInfo.lyric.length > 0) {
+      return musicInfo.lyric[0].text;
     }
     return "当前歌曲暂无歌词提供";
   });
@@ -57,6 +69,23 @@ export default function Music({ info, onRotateMusic }: Props) {
   }, []);
 
   useEffect(() => {
+    if (!("mediaSession" in navigator)) return;
+    navigator.mediaSession.setActionHandler("play", () => {
+      audioRef.current?.play();
+    });
+    navigator.mediaSession.setActionHandler("pause",  async () => {
+      audioRef.current?.pause();
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", () => {
+      onRotateMusic("prev");
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", () => {
+      onRotateMusic("next");
+    });
+  }, [onRotateMusic]);
+
+  useEffect(() => {
+    changeMediaSession(musicInfo);
     const audio = audioRef.current;
     if (!audio) return;
     audio.load();
@@ -66,11 +95,11 @@ export default function Music({ info, onRotateMusic }: Props) {
       setPaused(true);
     });
     if (isNaN(audio?.duration)) {
-      setDuration(info.duration);
+      setDuration(musicInfo.duration);
     } else {
       setDuration(audio?.duration);
     }
-  }, [info]);
+  }, [musicInfo]);
 
   const calcTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -79,7 +108,7 @@ export default function Music({ info, onRotateMusic }: Props) {
   }
 
   const displayLyrics = (_curTime: number) => {
-    const lyricsArray = info.lyric;
+    const lyricsArray = musicInfo.lyric;
     if (lyricsArray?.length === 0) {
       setCurrentLyric("当前歌曲暂无歌词提供");
       return;
@@ -126,7 +155,7 @@ export default function Music({ info, onRotateMusic }: Props) {
             setCurrentTime(time);
           }}
           onLoadedData={() => {
-            setCurrentLyric(info.title + " - " + info.singer.map(el => el.name).join(" & "));
+            setCurrentLyric(musicInfo.title + " - " + musicInfo.singer.map(el => el.name).join(" & "));
           }}
           onEnded={() => {
             console.log(currentTime, duration)
@@ -137,7 +166,7 @@ export default function Music({ info, onRotateMusic }: Props) {
             setCurrentLyric("歌曲加载出错");
           }}
         >
-          <source src={info.musicUrl} type="audio/mp3" />
+          <source src={musicInfo.musicUrl} type="audio/mp3" />
         </audio>
       </div>
       <CardBody>
@@ -145,7 +174,7 @@ export default function Music({ info, onRotateMusic }: Props) {
           <div className="relative col-span-6 hidden sm:col-span-4 sm:block">
             <Image
               // https://y.qq.com/music/photo_new/T002R300x300M0000049MVh824D7bM.jpg?max_age=2592000
-              src={info.imageUrl}
+              src={musicInfo.imageUrl}
               height={200}
               width={200}
               fallbackSrc="/404.png"
@@ -161,11 +190,11 @@ export default function Music({ info, onRotateMusic }: Props) {
           <div className="flex flex-col col-span-6 sm:col-span-8">
             <div className="flex justify-between items-start">
               <div className="grid grid-cols-12 gap-1">
-                <CornerIcon>{PLATFORM_ICON[info.platform]}</CornerIcon>
+                <CornerIcon>{PLATFORM_ICON[musicInfo.platform]}</CornerIcon>
                 <div className="col-span-4 block sm:hidden">
                   <Image
                     // https://y.qq.com/music/photo_new/T002R300x300M0000049MVh824D7bM.jpg?max_age=2592000
-                    src={info.imageUrl}
+                    src={musicInfo.imageUrl}
                     height={200}
                     width={200}
                     removeWrapper
@@ -176,12 +205,12 @@ export default function Music({ info, onRotateMusic }: Props) {
                   />
                 </div>
                 <div className="flex flex-col gap-0 col-span-8 sm:col-span-12">
-                  <RollText className="font-semibold text-foreground/90">{info.title}
-                    {(info.subtitle && <span className="text-small"> - {info.subtitle}</span>)}
+                  <RollText className="font-semibold text-foreground/90">{musicInfo.title}
+                    {(musicInfo.subtitle && <span className="text-small"> - {musicInfo.subtitle}</span>)}
                   </RollText>
                   <p className="text-small text-foreground/80">
-                    {info.vip && <VIP />}
-                    {(info.singer ?? []).map(el => el.name).join(" & ")}
+                    {musicInfo.vip && <VIP />}
+                    {(musicInfo.singer ?? []).map(el => el.name).join(" & ")}
                   </p>
                   <ResponsiveText className="text-large font-medium mt-2 h-[28px]" text={currentLyric} defaultSize={18} />
                 </div>
