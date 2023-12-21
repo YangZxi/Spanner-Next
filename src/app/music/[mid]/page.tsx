@@ -111,7 +111,7 @@ export default function Page({params, searchParams}: Props) {
     </div>
     <div className="w-full max-w-[610px] flex justify-center order-2 items-start" >
       <ClientOnly>
-        {musicInfo && <Music info={musicInfo} onRotateMusic={rotateMusic} />}
+        {musicInfo && <Music musicInfo={musicInfo} onRotateMusic={rotateMusic} />}
       </ClientOnly>
     </div>
   </div>;
