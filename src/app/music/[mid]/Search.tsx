@@ -19,8 +19,8 @@ function hideKeyboard() {
   document.body.removeChild(inputField);
 }
 
-export default function Search({onSearch, ...props}: Props) {
-  const [value, setValue] = useState<string>(props.defaultValue ?? "");
+export default function Search({defaultValue, onSearch, ...props}: Props) {
+  const [value, setValue] = useState<string>(defaultValue ?? "");
 
   const searchHandler = () => {
     let val = value.trim();
