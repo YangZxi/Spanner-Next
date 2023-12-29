@@ -39,6 +39,7 @@ export default function Page({params, searchParams}: Props) {
       }
     }
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!music.id) return;
@@ -52,6 +53,9 @@ export default function Page({params, searchParams}: Props) {
   }
 
   const getMusicInfo = (music: MusicAndPlatform) => {
+    const timer = setTimeout(() => {
+      setLoading(true);
+    }, 700);
     fetch(`/api/music/info?mid=${music.id}&platform=${music.platform}`).then(res => res.json()).then(data => {
       if (data.code) {
         const musicInfo = data.data as MusicDetail;
@@ -65,6 +69,9 @@ export default function Page({params, searchParams}: Props) {
       }
     }).catch(err => {
       console.error(err);
+    }).finally(() => {
+      clearTimeout(timer);
+      setLoading(false);
     });
   }
 
@@ -96,8 +103,8 @@ export default function Page({params, searchParams}: Props) {
 
   return <div className="flex flex-wrap justify-center gap-4">
     <div className="flex justify-center w-full">
-      <Search className="max-w-[610px]" onSearch={(value) => {
-        searchSong(value).then(data => {
+      <Search className="max-w-[610px]" onSearch={async (value) => {
+        return searchSong(value).then(data => {
           setSongList(data ?? []);
         });
       }} />
@@ -111,7 +118,7 @@ export default function Page({params, searchParams}: Props) {
     </div>
     <div className="w-full max-w-[610px] flex justify-center order-2 items-start" >
       <ClientOnly>
-        {musicInfo && <Music musicInfo={musicInfo} onRotateMusic={rotateMusic} />}
+        {musicInfo && <Music musicInfo={musicInfo} onRotateMusic={rotateMusic} loading={loading} />}
       </ClientOnly>
     </div>
   </div>;

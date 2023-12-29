@@ -9,7 +9,7 @@ import {
   PauseCircleIcon,
   PreviousIcon,
   RepeatOneIcon,
-  ShuffleIcon, ListIcon, VIP
+  ShuffleIcon, ListIcon, VIP, Loading
 } from "./Icon";
 import {MusicDetail} from "@/app/api/music/type";
 import {ResponsiveText} from "@/components/ResponsiveText";
@@ -20,6 +20,7 @@ import {PLATFORM_ICON, parseLyrics} from "@/app/music/[mid]/common";
 
 type Props = {
   musicInfo: MusicDetail;
+  loading: boolean;
   onRotateMusic: (type: "prev" | "next" | "random", platform?: MusicAndPlatform) => void;
 }
 
@@ -45,7 +46,7 @@ function changeMediaSession(musicInfo: MusicDetail) {
   });
 }
 
-export default function Music({ musicInfo, onRotateMusic }: Props) {
+export default function Music({ musicInfo, loading, onRotateMusic, ...props }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [liked, setLiked] = useState(false);
   const [paused, setPaused] = useState<boolean>(true);
@@ -280,15 +281,18 @@ export default function Music({ musicInfo, onRotateMusic }: Props) {
                 radius="full"
                 variant="light"
                 onClick={() => {
+                  if (loading) return;
                   if (paused) {
-                    audioRef.current?.play();
+                    audioRef.current?.play().then(() => {
+                      setPaused(false);
+                    });
                   } else {
                     audioRef.current?.pause();
                   }
                   setPaused((v) => !v);
                 }}
               >
-                {paused ? <PlayCircleIcon size={54} /> : <PauseCircleIcon size={54} />}
+                {loading ? <Loading size={54} /> : paused ? <PlayCircleIcon size={54} /> : <PauseCircleIcon size={54} />}
               </Button>
               <Button
                 isIconOnly
