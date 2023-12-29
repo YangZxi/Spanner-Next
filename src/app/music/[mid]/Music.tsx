@@ -46,7 +46,7 @@ function changeMediaSession(musicInfo: MusicDetail) {
   });
 }
 
-export default function Music({ musicInfo, loading, onRotateMusic, ...props }: Props) {
+export default function Music({ musicInfo, loading, onRotateMusic }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [liked, setLiked] = useState(false);
   const [paused, setPaused] = useState<boolean>(true);

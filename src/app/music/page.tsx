@@ -26,8 +26,8 @@ export default function Page() {
       <div className="max-w-[610px]" style={{margin: "10rem auto"}}>
         <Search
           defaultValue={songList.length > 0 ? undefined : "晴天"}
-          onSearch={(word) => {
-            searchSong(word).then(data => {
+          onSearch={async (word) => {
+            return searchSong(word).then(data => {
               console.log(data)
               setSongList(data ?? []);
             });
