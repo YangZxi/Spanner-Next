@@ -158,7 +158,12 @@ export default function Music({ musicInfo, onRotateMusic }: Props) {
           }}
           onEnded={() => {
             console.log(currentTime, duration)
-            onRotateMusic("next");
+            if (playingMode === "single") {
+              audioRef.current?.play();
+              return;
+            } else {
+              onRotateMusic("next");
+            }
           }}
           onError={(err) => {
             console.log(err)
