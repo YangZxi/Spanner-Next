@@ -1,5 +1,4 @@
 import {MusicDetail, PlaylistInfo, Song} from "../type";
-import {parseLyrics} from "./common";
 
 const platform = "qq";
 
@@ -47,7 +46,7 @@ async function getMusicUrl(mid: string) {
   return res.sip[1] + res.midurlinfo[0].purl;
 }
 
-async function getMusicLyric(mid: string) {
+async function getMusicLyric(mid: string): Promise<MusicDetail["lyrics"]> {
   const uin = "110110";
   const url = `https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=${mid}&g_tk=5381&loginUin=${uin}&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0`;
   return await fetch(url, {
@@ -62,11 +61,16 @@ async function getMusicLyric(mid: string) {
       const lyricsRaw = Buffer.from(result.lyric, 'base64').toString();
       // console.log(lyricsRaw, 13)
       return {
-        lyric: parseLyrics(lyricsRaw),
+        lyric: lyricsRaw,
         trans: result.trans
       };
     })
-    .catch(error => console.log('error', error));
+    .catch(error => {
+      console.log('error', error);
+      return {
+        lyric: "",
+      }
+    });
 }
 
 export async function searchMusicByQQ(word: string) {
@@ -196,7 +200,7 @@ export async function getMusicInfoByQQ(mid: string) {
   }));
 
   const musicUrl = await getMusicUrl(mid);
-  const lyric = await getMusicLyric(mid);
+  const lyrics = await getMusicLyric(mid);
   // console.log(lyric)
 
   let imageUrl: string;
@@ -214,7 +218,7 @@ export async function getMusicInfoByQQ(mid: string) {
     imageUrl,
     musicUrl,
     duration: trackInfo.interval,
-    lyric: lyric?.lyric ?? [],
+    lyrics: lyrics,
     vip: trackInfo.pay.pay_play === 1,
     platform
   }

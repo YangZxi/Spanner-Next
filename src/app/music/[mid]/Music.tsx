@@ -16,7 +16,7 @@ import {ResponsiveText} from "@/components/ResponsiveText";
 import RollText from "@/components/RollText";
 import type {MusicAndPlatform} from "./page"
 import CornerIcon from "@/components/CornerIcon";
-import {PLATFORM_ICON} from "@/app/music/[mid]/common";
+import {PLATFORM_ICON, parseLyrics} from "@/app/music/[mid]/common";
 
 type Props = {
   musicInfo: MusicDetail;
@@ -50,13 +50,8 @@ export default function Music({ musicInfo, onRotateMusic }: Props) {
   const [liked, setLiked] = useState(false);
   const [paused, setPaused] = useState<boolean>(true);
 
-  const [currentLyric, setCurrentLyric] = useState<string>(() => {
-    console.log(musicInfo)
-    if (musicInfo.lyric.length > 0) {
-      return musicInfo.lyric[0].text;
-    }
-    return "当前歌曲暂无歌词提供";
-  });
+  const [lyricsArray, setLyricsArray] = useState<{ time: number; text: string; }[]>([]);
+  const [currentLyric, setCurrentLyric] = useState<string>("");
   const [dragging, setDragging] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
@@ -86,6 +81,11 @@ export default function Music({ musicInfo, onRotateMusic }: Props) {
 
   useEffect(() => {
     changeMediaSession(musicInfo);
+    if (musicInfo.lyrics.lyric.length > 0) {
+      const arr = parseLyrics(musicInfo.lyrics.lyric);
+      setLyricsArray(arr);
+      setCurrentLyric(arr.length > 0 ? arr[0].text : "当前歌曲暂无歌词提供");
+    }
     const audio = audioRef.current;
     if (!audio) return;
     audio.load();
@@ -108,7 +108,6 @@ export default function Music({ musicInfo, onRotateMusic }: Props) {
   }
 
   const displayLyrics = (_curTime: number) => {
-    const lyricsArray = musicInfo.lyric;
     if (lyricsArray?.length === 0) {
       setCurrentLyric("当前歌曲暂无歌词提供");
       return;

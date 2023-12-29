@@ -28,10 +28,11 @@ export type MusicDetail = {
   imageUrl: string;
   musicUrl: string;
   duration: number;
-  lyric: {
-    time: number;
-    text: string;
-  }[];
+  lyrics: {
+    lyric: string;
+    lyricAdvance?: string;
+    trans?: string;
+  };
   vip: boolean;
   platform: Platform;
 }

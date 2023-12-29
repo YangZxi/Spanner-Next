@@ -1,5 +1,4 @@
 import {MusicDetail, Song} from "../type";
-import {parseLyrics} from "./common";
 
 const forge = require("node-forge");
 const CryptoJS = require("crypto-js");
@@ -179,8 +178,10 @@ async function getMusicInfo(id: string) {
         })),
         imageUrl: song.al.picUrl,
         musicUrl: "",
+        lyrics: {
+          lyric: "",
+        },
         duration: song.dt / 1000,
-        lyric: [],
         vip: song.fee === 1,
         platform
       }
@@ -193,7 +194,7 @@ async function getMusicInfo(id: string) {
   return musicInfo ?? null;
 }
 
-async function getMusicLyric(id: string) {
+async function getMusicLyric(id: string): Promise<MusicDetail["lyrics"]> {
   const body = {
     id: String(id),
     cp: false,
@@ -214,14 +215,14 @@ async function getMusicLyric(id: string) {
   }).then(res => res.json())
     .then(({lrc, yrc}) => {
       return {
-        lyric: parseLyrics(lrc.lyric),
-        trans: []
+        lyric: lrc.lyric as string,
+        trans: ""
       };
     })
     .catch(err => {
       console.log(err)
       return {
-        lyric: [],
+        lyric: "",
       };
     });
   return data;
@@ -233,7 +234,7 @@ export async function getMusicInfoByNetease(id: string) {
     return {
       ...info,
       musicUrl: url,
-      lyric: lyric?.lyric ?? [],
+      lyrics: lyric,
     }
   });
 }
