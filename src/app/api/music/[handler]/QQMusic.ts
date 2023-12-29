@@ -46,7 +46,7 @@ async function getMusicUrl(mid: string) {
   return res.sip[1] + res.midurlinfo[0].purl;
 }
 
-async function getMusicLyric(mid: string) {
+async function getMusicLyric(mid: string): Promise<MusicDetail["lyrics"]> {
   const uin = "110110";
   const url = `https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=${mid}&g_tk=5381&loginUin=${uin}&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0`;
   return await fetch(url, {
@@ -57,50 +57,20 @@ async function getMusicLyric(mid: string) {
     .then(response => response.json())
     .then(result => {
       // console.log(result)
+      // console.log(lyricRaw)
+      const lyricsRaw = Buffer.from(result.lyric, 'base64').toString();
+      // console.log(lyricsRaw, 13)
       return {
-        lyric: parseLyrics(result.lyric),
+        lyric: lyricsRaw,
         trans: result.trans
       };
     })
-    .catch(error => console.log('error', error));
-}
-
-// 正则表达式用于匹配时间戳和歌词文本
-const regex = /\[([\d:.]*)](.*)/;
-
-function parseLyrics(lyricRaw: string) {
-  // console.log(lyricRaw)
-  const lyricsText = new Buffer(lyricRaw, 'base64').toString();
-  // console.log(lyricsText)
-  const lyricsArray = [];
-
-  // 分割歌词文本为行
-  const lines = lyricsText.replaceAll("\r", "\n").split("\n");
-  // console.log(lines)
-  for (const line of lines) {
-    const match = line.match(regex);
-    // console.log(match, line)
-    if (match) {
-      const timestamp = match[1];
-      const lyricText = match[2];
-      if (lyricText.length === 0) continue;
-
-      // 解析时间戳为秒数
-      const [minutes, seconds] = timestamp.split(':').map(parseFloat);
-      const timeInSeconds = minutes * 60 + seconds;
-
-      // 将时间戳和歌词文本添加到数组中
-      lyricsArray.push({
-        time: timeInSeconds,
-        text: lyricText,
-      });
-    }
-  }
-
-  // 根据时间戳排序歌词数组
-  lyricsArray.sort((a, b) => a.time - b.time);
-
-  return lyricsArray;
+    .catch(error => {
+      console.log('error', error);
+      return {
+        lyric: "",
+      }
+    });
 }
 
 export async function searchMusicByQQ(word: string) {
@@ -230,7 +200,7 @@ export async function getMusicInfoByQQ(mid: string) {
   }));
 
   const musicUrl = await getMusicUrl(mid);
-  const lyric = await getMusicLyric(mid);
+  const lyrics = await getMusicLyric(mid);
   // console.log(lyric)
 
   let imageUrl: string;
@@ -248,7 +218,7 @@ export async function getMusicInfoByQQ(mid: string) {
     imageUrl,
     musicUrl,
     duration: trackInfo.interval,
-    lyric: lyric?.lyric ?? [],
+    lyrics: lyrics,
     vip: trackInfo.pay.pay_play === 1,
     platform
   }

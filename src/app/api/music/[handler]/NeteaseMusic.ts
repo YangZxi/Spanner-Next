@@ -1,4 +1,4 @@
-import {MusicDetail, Song} from "@/app/api/music/type";
+import {MusicDetail, Song} from "../type";
 
 const forge = require("node-forge");
 const CryptoJS = require("crypto-js");
@@ -178,8 +178,10 @@ async function getMusicInfo(id: string) {
         })),
         imageUrl: song.al.picUrl,
         musicUrl: "",
+        lyrics: {
+          lyric: "",
+        },
         duration: song.dt / 1000,
-        lyric: [],
         vip: song.fee === 1,
         platform
       }
@@ -192,14 +194,47 @@ async function getMusicInfo(id: string) {
   return musicInfo ?? null;
 }
 
+async function getMusicLyric(id: string): Promise<MusicDetail["lyrics"]> {
+  const body = {
+    id: String(id),
+    cp: false,
+    tv: 0,
+    lv: 0,
+    rv: 0,
+    kv: 0,
+    yv: 0,
+    ytv: 0,
+    yrv: 0,
+  }
+  const encryptData = eapi("/api/song/lyric/v1", body);
+  const params = encodeURIComponent(encryptData.params);
+  const url = "https://interface3.music.163.com/eapi/song/lyric/v1";
+  const data = await fetch(`${url}?params=${params}`, {
+    method: "POST",
+    headers: defaultHeaders
+  }).then(res => res.json())
+    .then(({lrc, yrc}) => {
+      return {
+        lyric: lrc.lyric as string,
+        trans: ""
+      };
+    })
+    .catch(err => {
+      console.log(err)
+      return {
+        lyric: "",
+      };
+    });
+  return data;
+}
+
 export async function getMusicInfoByNetease(id: string) {
-  const promise = Promise.all([getMusicInfo(id), getMusicUrl(id)]);
-  return await promise.then(([info, url]) => {
+  const promise = Promise.all([getMusicInfo(id), getMusicUrl(id), getMusicLyric(id)]);
+  return await promise.then(([info, url, lyric]) => {
     return {
       ...info,
-      musicUrl: url
+      musicUrl: url,
+      lyrics: lyric,
     }
   });
 }
-
-// searchMusicByNetease("有何不可")
