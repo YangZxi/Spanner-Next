@@ -44,6 +44,9 @@ export default function Home() {
 				<Link isBlock href="/xiaohongshu" color="primary">
 					小红书图片去水印
 				</Link>
+				<Link isBlock href="/web" color="primary">
+					获取网站 OG 信息
+				</Link>
 			</div>
 
 			{/*<div className="mt-8">*/}

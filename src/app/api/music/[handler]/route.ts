@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import Response from "@/util/Response";
+import Response, {getSearchParams} from "@/util/Response";
 import { type NextRequest } from 'next/server';
 import { getMusicInfoByQQ, searchMusicByQQ, getPlaylistByQQ } from "./QQMusic";
 import {getMusicInfoByNetease, searchMusicByNetease} from "./NeteaseMusic";
@@ -65,15 +65,3 @@ async function getPlaylistInfo(request: NextRequest) {
 }
 
 
-function getSearchParams(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const map: {
-    [key: string]: string | undefined;
-  } = {
-
-  }
-  searchParams.forEach((value, key) => {
-    map[key] = value;
-  });
-  return map;
-}
