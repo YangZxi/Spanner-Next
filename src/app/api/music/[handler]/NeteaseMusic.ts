@@ -160,7 +160,7 @@ async function getMusicInfo(id: string) {
     encSecKey: encodeURIComponent(encryptData.encSecKey)
   }
   const url = `https://music.163.com/weapi/v3/song/detail?params=${params}&encSecKey=${encSecKey}`;
-  // console.log(url)
+  // console.log(shortlink)
   const musicInfo = fetch(url, {
     method: "POST",
     headers: defaultHeaders
@@ -209,7 +209,7 @@ async function getMusicLyric(id: string): Promise<MusicDetail["lyrics"]> {
   const encryptData = eapi("/api/song/lyric/v1", body);
   const params = encodeURIComponent(encryptData.params);
   const url = "https://interface3.music.163.com/eapi/song/lyric/v1";
-  const data = await fetch(`${url}?params=${params}`, {
+  return await fetch(`${url}?params=${params}`, {
     method: "POST",
     headers: defaultHeaders
   }).then(res => res.json())
@@ -225,7 +225,6 @@ async function getMusicLyric(id: string): Promise<MusicDetail["lyrics"]> {
         lyric: "",
       };
     });
-  return data;
 }
 
 export async function getMusicInfoByNetease(id: string) {
