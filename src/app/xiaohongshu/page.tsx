@@ -50,7 +50,10 @@ const realImageUrl = "http://sns-img-hw.xhscdn.net/{}?imageView2/2/w/1280/format
 
 async function getXhsImage(url: string) {
 	const res = await fetch(url, {
-		cache: "no-store"
+		cache: "no-store",
+		headers: {
+			"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0"
+		}
 	}).then(res => {
 		if (!res.ok) {
 			Promise.reject();
@@ -63,7 +66,7 @@ async function getXhsImage(url: string) {
 	if (!res) return [];
 
 	let contentStr = res.substring(res.lastIndexOf(markText));
-	// console.log(contentStr)
+	// console.log("contentStr", contentStr)
 	if (!contentStr) {
 		return [];
 	}
@@ -72,7 +75,7 @@ async function getXhsImage(url: string) {
 	// const images = contentStr?.match(regex);
 	const images = getJsonValue(contentStr, "imageList");
 	if (images == null) {
-		console.log(contentStr)
+		console.log("images is null", contentStr)
 		return [];
 	}
 	try {
